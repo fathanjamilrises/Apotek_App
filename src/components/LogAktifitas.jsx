@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import moment from "moment";
 const LogAktifitas = () => {
-  const apiURL = "http://localhost:3000/api/v1";
+  const apiURL = import.meta.env.VITE_API_URL;
   const [logAktifitas, setLogAktifitas] = useState([]);
 
   useEffect(() => {

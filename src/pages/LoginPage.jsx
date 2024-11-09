@@ -9,7 +9,7 @@ const LoginPage = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const apiURL = "http://localhost:3000/api/v1";
+  const apiURL = import.meta.env.VITE_API_URL;
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
@@ -53,9 +53,7 @@ const LoginPage = () => {
         } catch (err) {
           console.error("Login error:", err);
         }
-      } else {
-        //  Validasi Apa Ini
-      }
+      } 
     } catch (err) {
       setError("Username atau password salah");
       console.error("Login error:", err);

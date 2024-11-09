@@ -10,31 +10,59 @@ const RegisterPage = () => {
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
     const [error, setError] = useState("");
+    const apiURL = import.meta.env.VITE_API_URL;
     const navigate = useNavigate();
 
     const handleRegister = async (e) => {
         e.preventDefault();
-
-        if (password !== confirmPassword) {
-            setError("Password dan konfirmasi password tidak cocok.");
-            return;
-        }
-
-        try {
-            await pb.collection("Tbl_User").create({
-                name,
-                username,
-                email,
-                password,
-                passwordConfirm: confirmPassword,
-                type_user: "apoteker",
+        try{
+            const res = await fetch(`${apiURL}/auth/register`, {
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                method: "POST",
+                body: JSON.stringify({
+                    name,
+                    username,
+                    email,
+                    password,
+                    passwordConfirm: confirmPassword,
+                }),
             });
-            navigate("/");
-        } catch (err) {
-            setError("Gagal Membuat Akun");
-            console.error("Register error:", err);
-        }
-    };
+            const user = await res.json();
+
+            if (user.success) {
+                try {
+                    const response = await fetch(`${apiURL}/log-aktifitas`, {
+                      headers: {
+                        "content-type": "application/json",
+                      },
+                      method: "POST",
+                      body: JSON.stringify({
+                        username,
+                        aktifitas: "Register",
+                      }),
+                    });
+                    const result = await response.json();
+                    if (result.status) {
+                      localStorage.setItem("username", user.data.username);
+                      localStorage.setItem("isAuthenticated", true);
+                      localStorage.setItem("name", user.data.name);
+                      localStorage.setItem("id", user.data.id);
+                      localStorage.setItem("email", user.data.email);
+                      navigate("/");
+                    }
+                  } catch (error) {
+                    console.error("Error fetching log aktifitas:", error);
+                  }
+            } else {
+                setError(user.message);
+            }
+    }catch (error) {
+        console.error("Error registering user:", error);
+    }
+}
+
 
     return (
         <div className="min-w-screen min-h-screen bg-slate-300 flex items-center justify-center px-5 py-5">

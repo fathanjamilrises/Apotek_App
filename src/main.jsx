@@ -6,6 +6,7 @@ import RegisterPage from './pages/RegisterPage'
 import DashboardPage from './pages/DashboardPage'
 import ProtectedRoute from './components/ProtectedRoute'
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
+import KelolaUser from './pages/KelolaUser'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
@@ -21,6 +22,14 @@ createRoot(document.getElementById('root')).render(
             </ProtectedRoute>
           }
         />
+        <Route
+          path="/kelola-user"
+          element={
+            <ProtectedRoute>
+              <KelolaUser />
+            </ProtectedRoute>
+          }
+          />
       </Routes>
     </Router>
   </StrictMode>,
